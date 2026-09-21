@@ -1,7 +1,9 @@
+from sys import path
+
 from model import model_lead
 import control
 
-def add_nead():
+def add_lead():
     name = input("Nome: ")
     email = input("Email: ")
     status = input("Etapa no funil de vendas: ")
@@ -20,23 +22,49 @@ def add_nead():
 
 def list_leads():
     leads = control.read_leads()
-    print(leads)
-    # formatar como tabela...
+
+    print(f"## | {"Nome":<15} | E-mail")
+    for i, lead in enumerate(leads):
+        print(f"{i:02d} | {lead["name"]:<15} | {lead["email"]}")
+
+def search_leads():
+    query = input("Busca por: ").strip().lower()
+
+    # CONTROL!!
+    # comparação entre a query digitada e o leads.json
+    search_results = control.read_leads_search(query)
+
+    print(f"## | {"Nome":<15} | E-mail")
+    for i, lead in search_results:
+        print(f"{i:02d} | {lead["name"]:<15} | {lead["email"]}")
+
+def export_leads():
+    path_csv =  control.exportar_csv()
+    if path_csv is None:
+        print("Não foi possível exportar para CSV")
+    else:
+        print(f"Exportado para {path_csv}")
 
 def main():
     while True:
         print("\nMini CRM de Leads")
         print("[1] Aicionar lead")
         print("[2] Listar leads")
+        print("[3] Buscar (nome/e-mail)")
+        print("[4] Exportar para CSV")
         print("[0] Sair do Programa")
 
         opt = input("Escolha uma opção: ")
 
         if opt =='1':
-            add_nead()
+            add_lead()
             print("Lead adicionado")
         elif opt =='2':
             list_leads()
+        elif opt =='3':
+            search_leads()
+        elif opt =='4':
+            export_leads()
         elif opt =='0':
             print("Até mais...")
             break
